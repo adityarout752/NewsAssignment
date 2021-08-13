@@ -44,9 +44,14 @@ return NewsViewHolder(LayoutInflater.from(parent.context).inflate(
 
             tvTitle.text=article.title
             tvDescription.text=article.description
-            onItemClickListener?.let{
-                it(article)
+
+            constrainLayout.setOnClickListener {
+                val intent=Intent(context,DetailedNewsActivity::class.java)
+                intent.putExtra("urls",article.url)
+                context.startActivity(intent)
+
             }
+
 
         }
     }
@@ -54,8 +59,5 @@ return NewsViewHolder(LayoutInflater.from(parent.context).inflate(
     override fun getItemCount(): Int {
         return differ.currentList.size
     }
-    private var onItemClickListener:((Article)->Unit)?=null
-    fun setOnItemClickListener(listener:(Article)->Unit){
-        onItemClickListener=listener
-    }
+
 }

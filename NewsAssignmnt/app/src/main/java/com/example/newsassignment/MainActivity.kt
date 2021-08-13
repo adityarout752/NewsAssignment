@@ -18,9 +18,8 @@ import com.example.newsassignment.viewModel.NewsViewModelProviderFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-
 class MainActivity : AppCompatActivity() {
-lateinit var viewModel:NewsViewModel
+    lateinit var viewModel: NewsViewModel
     lateinit var newsAdapter: NewsAdapter
     private val TAG = "MainActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,21 +33,10 @@ lateinit var viewModel:NewsViewModel
 
 
         SetupViewModel()
-        newsAdapter.setOnItemClickListener {
-
-
-
-
-        val  intent=Intent(this@MainActivity,DetailedNewsActivity::class.java)
-        intent.putExtra("urls",it.url)
-        startActivity(intent)
-        }
-
 
 
 
     }
-
 
 
     private fun setUpRecyclerView() {
@@ -59,29 +47,29 @@ lateinit var viewModel:NewsViewModel
         }
     }
 
-    private fun SetupViewModel(){
-viewModel.breakingNews.observe(this, Observer { response->
-    when (response) {
-        is Resource.Success -> {
-            hideProgressBar()
-            response.data?.let { newsResponse ->
-                newsAdapter.differ.submitList(newsResponse.articles)
+    private fun SetupViewModel() {
+        viewModel.breakingNews.observe(this, Observer { response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    response.data?.let { newsResponse ->
+                        newsAdapter.differ.submitList(newsResponse.articles)
 
+                    }
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                    response.message?.let { message ->
+                        Log.e(TAG, "error is:$message")
+
+                    }
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
             }
-        }
-        is Resource.Error -> {
-            hideProgressBar()
-            response.message?.let { message ->
-                Log.e(TAG, "error is:$message")
 
-            }
-        }
-        is Resource.Loading -> {
-            showProgressBar()
-        }
-    }
-
-})
+        })
     }
 
     private fun hideProgressBar() {
